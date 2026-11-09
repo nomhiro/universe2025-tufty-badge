@@ -29,7 +29,7 @@ GitHub Universe 2025 でもらったバッジ（Pimoroni Tufty 2350 ベース、
 | sketch | お絵かき | `A` / `C` / `UP` / `DOWN` で描く |
 | probe | 載っている部品を調べる自作アプリ（照度・温度・時計の値、LED テスト、ピン名やモジュールの一覧） | `UP` / `DOWN` でページ送り、`B` で LED テスト、`A` で `/probe.txt` に保存 |
 
-使えるセンサーや LED の位置は [docs/hardware.md](docs/hardware.md) にまとめています（照度センサー・時計チップ・LED 4 か所あり、加速度センサーなし）。
+使えるセンサーや LED の位置は [docs/hardware.md](docs/hardware.md) にまとめています（照度センサー・時計チップ・LED 4 か所あり、加速度センサーなし）。Qw/ST 端子に足せるセンサーは [docs/sensors.md](docs/sensors.md) にまとめています。
 
 メニューは `system/apps/` のフォルダを自動で見つけて並べます。先頭に固定するアプリは `system/apps/menu/__init__.py` の `PINNED` で決めます。
 

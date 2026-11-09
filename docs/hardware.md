@@ -40,6 +40,8 @@
 
 ## Qw/ST 用ドライバー
 
+部品ごとの用途と I2C の番地は [sensors.md](sensors.md) にまとめています。
+
 資料に載っていた次の 30 個は、すべて実機で読み込めました。
 
 `pcf85063a` `powman` `aye_arr` `aye_arr.nec` `pimoroni_i2c` `qwstpad` `breakout_msa301` `breakout_bme280` `breakout_bme68x` `breakout_bme69x` `breakout_bmp280` `breakout_icp10125` `breakout_scd41` `breakout_sgp30` `breakout_mics6814` `breakout_ltr559` `breakout_bh1745` `breakout_as7262` `breakout_as7343` `breakout_vl53l5cx` `breakout_pmw3901` `breakout_paa5100` `breakout_trackball` `breakout_encoder` `breakout_potentiometer` `breakout_rtc` `ulab` `qrcode` `network` `bluetooth`
