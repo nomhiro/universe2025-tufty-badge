@@ -18,3 +18,6 @@ out/
 
 # 個人の写真
 *.jpg
+
+# probe アプリが書き出す調査結果（内容は docs に整理する）
+probe.txt
