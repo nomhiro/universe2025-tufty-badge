@@ -10,7 +10,8 @@ GitHub Universe 2025 でもらったバッジ（Pimoroni Tufty 2350 ベース、
 |---|---|---|
 | `system/main.py` | 起動処理（演出 → メニュー → アプリ） | 工場出荷時のまま |
 | `system/apps/menu/` | ランチャー | badge25 のページ切り替え版（`default_icon.png` を含む）に替え、`badge` を左上に固定した |
-| `system/apps/` のほかのアプリ | badge, flappy, gallery, monapet, sketch, startup | 工場出荷時のまま（quest は削除） |
+| `system/apps/kumobii/` | くもびぃを眺めるアプリ | 自作 |
+| `system/apps/` のほかのアプリ | badge, flappy, gallery, monapet, startup | 工場出荷時のまま（quest、hello_badge、sketch は削除） |
 | `system/assets/` | フォント、Mona のスプライト、アイコン | 工場出荷時のまま |
 | `secrets.py` | Wi-Fi の SSID・パスワード、GitHub のユーザー名 | **リポジトリには入れない**。ひな形は `secrets.example.py` |
 
@@ -26,10 +27,11 @@ GitHub Universe 2025 でもらったバッジ（Pimoroni Tufty 2350 ベース、
 | flappy | Mona が障害物をくぐるゲーム | `A` で羽ばたく |
 | gallery | 内蔵画像のビューアー | `A` / `C` で前後、`B` で説明の表示切り替え |
 | monapet | Mona の育成 | `A` 遊ぶ、`B` ごはん、`C` お風呂 |
-| sketch | お絵かき | `A` / `C` / `UP` / `DOWN` で描く |
-| probe | 載っている部品を調べる自作アプリ（照度・温度・時計の値、LED テスト、ピン名やモジュールの一覧） | `UP` / `DOWN` でページ送り、`B` で LED テスト、`A` で `/probe.txt` に保存 |
+| kumobii | KINTO のキャラクター「くもびぃ」が空をぷかぷか浮かぶのを眺める自作アプリ | `A` 跳ねる、`B` 大きさ（小・中・大）、`C` 空（昼・夕方・夜） |
 
 使えるセンサーや LED の位置は [docs/hardware.md](docs/hardware.md) にまとめています（照度センサー・時計チップ・LED 4 か所あり、加速度センサーなし）。Qw/ST 端子に足せるセンサーは [docs/sensors.md](docs/sensors.md) にまとめています。
+
+kumobii のくもびぃは、KINTO 公式の画像を使わず、円を重ねてコードで描いたファンアートです。くもびぃは株式会社 KINTO のキャラクターで、このリポジトリは KINTO とは関係ありません。
 
 メニューは `system/apps/` のフォルダを自動で見つけて並べます。先頭に固定するアプリは `system/apps/menu/__init__.py` の `PINNED` で決めます。
 

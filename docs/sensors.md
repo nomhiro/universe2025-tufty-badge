@@ -62,7 +62,7 @@ Qw/ST は SparkFun の Qwiic と互換で、部品を数珠つなぎにできま
 | ゲームパッド | Qw/ST Pad | `qwstpad` | 0x21（切替 0x23 / 0x25 / 0x27） | ✅ |
 | 時計（RV3028） | RTC | `breakout_rtc` | 0x52 | ✅ |
 
-※ Encoder Wheel 専用の `breakout_encoder_wheel` が使えるかは確かめていません（probe の確認対象に入れていない）。時計は本体にもあるので、RTC Breakout は通常不要です。
+※ Encoder Wheel 専用の `breakout_encoder_wheel` が使えるかは確かめていません（probe アプリの確認対象に入れていなかった）。時計は本体にもあるので、RTC Breakout は通常不要です。
 
 ## ドライバーはないが使える部品
 
@@ -85,7 +85,7 @@ Qw/ST は SparkFun の Qwiic と互換で、部品を数珠つなぎにできま
   - **AS7343（0x39）** と、0x39 に切り替えた BH1745。
   - **LTR559（0x23）** と、0x23 に切り替えた Qw/ST Pad。
 - 番地の切り替えは、部品の裏のジャンパー（はんだで橋をかける場所）で行うものが多いです。
-- つないだ部品の番地は、probe アプリを起動すると I2C の接続先一覧に出ます。
+- つないだ部品の番地は `machine.I2C().scan()` で確かめられます（以前の probe アプリは git の履歴に残っています）。
 
 ## 用途別のおすすめ
 
