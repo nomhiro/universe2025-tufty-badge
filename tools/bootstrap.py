@@ -17,7 +17,7 @@ def main():
             check=True,
         )
     print("ready. try:")
-    print(f"  {sys.executable} vendor/home/badge25/simulator/badge_simulator.py -C system system/apps/hello_badge")
+    print(f"  {sys.executable} vendor/home/badge25/simulator/badge_simulator.py -C system system/apps/flappy")
 
 
 if __name__ == "__main__":

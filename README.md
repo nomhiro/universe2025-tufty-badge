@@ -9,25 +9,26 @@ GitHub Universe 2025 でもらったバッジ（Pimoroni Tufty 2350 ベース、
 | パス | 中身 | 出どころ |
 |---|---|---|
 | `system/main.py` | 起動処理（演出 → メニュー → アプリ） | 工場出荷時のまま |
-| `system/apps/menu/` | ランチャー | `__init__.py` と `default_icon.png` を badge25 のページ切り替え版に替えた |
-| `system/apps/hello_badge/` | ボタンテスター（自作） | このリポジトリ |
-| `system/apps/` のほかのアプリ | badge, flappy, gallery, monapet, quest, sketch, startup | 工場出荷時のまま |
+| `system/apps/menu/` | ランチャー | badge25 のページ切り替え版（`default_icon.png` を含む）に替え、`badge` を左上に固定した |
+| `system/apps/` のほかのアプリ | badge, flappy, gallery, monapet, sketch, startup | 工場出荷時のまま（quest は削除） |
 | `system/assets/` | フォント、Mona のスプライト、アイコン | 工場出荷時のまま |
 | `secrets.py` | Wi-Fi の SSID・パスワード、GitHub のユーザー名 | **リポジトリには入れない**。ひな形は `secrets.example.py` |
 
 工場出荷時のファイルは Pimoroni と GitHub の MIT ライセンスのものです（[badger/home の LICENSE](https://github.com/badger/home/blob/main/LICENSE)）。`system/` 以下は `.gitattributes` で改行コードの変換を止めて、バッジとバイト単位で同じに保っています。
 
-## アプリ
+## メニュー
 
-### hello_badge
+![menu](docs/images/menu.png)
 
-押したボタンの枠が、実機と同じ位置（右端に UP / DOWN、下端に A / B / C）で光ります。
+| アプリ | 中身 | 操作 |
+|---|---|---|
+| badge | GitHub のプロフィールと草（コントリビューショングラフ）。`secrets.py` の Wi-Fi とユーザー名を使う | `A`+`C` 同時押しで取り直す |
+| flappy | Mona が障害物をくぐるゲーム | `A` で羽ばたく |
+| gallery | 内蔵画像のビューアー | `A` / `C` で前後、`B` で説明の表示切り替え |
+| monapet | Mona の育成 | `A` 遊ぶ、`B` ごはん、`C` お風呂 |
+| sketch | お絵かき | `A` / `C` / `UP` / `DOWN` で描く |
 
-- A / C / UP / DOWN: 丸を動かす
-- B: 丸の色を変える
-- 右上: 電池残量
-
-![hello_badge](docs/images/hello_badge.png)
+メニューは `system/apps/` のフォルダを自動で見つけて並べます。先頭に固定するアプリは `system/apps/menu/__init__.py` の `PINNED` で決めます。
 
 ## 準備（Windows）
 
@@ -56,15 +57,15 @@ USB-C（データ通信できるケーブル）でつなぎ、背面の `RESET` 
 ## シミュレーターで動かす
 
 ```powershell
-.venv\Scripts\python vendor\home\badge25\simulator\badge_simulator.py -C system system\apps\hello_badge
+.venv\Scripts\python vendor\home\badge25\simulator\badge_simulator.py -C system system\apps\flappy
 ```
 
 キー操作: 矢印 = UP / DOWN、Z / X / Space = A / B / C、Esc = HOME。`system\apps\menu` を指定すると、メニューから動かせます。
 
-画面写真を自動で撮る例（20 フレーム目に B を押し、10 と 30 フレーム目を保存）:
+画面写真を自動で撮る例（20 フレーム目に A を押し、10 と 30 フレーム目を保存）:
 
 ```powershell
-.venv\Scripts\python tools\sim_snapshot.py system\apps\hello_badge out\hello_badge --keys "20:b" --shots 10,30
+.venv\Scripts\python tools\sim_snapshot.py system\apps\flappy out\flappy --keys "20:a" --shots 10,30
 ```
 
 シミュレーターには LED バックライトがなく、電池残量は常に 75% です。

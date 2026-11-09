@@ -28,6 +28,10 @@ try:
 except Exception as e:
     print(f"Error discovering apps: {e}")
 
+# Pin these apps to the front (top-left first); the rest follow alphabetically
+PINNED = ["badge"]
+apps.sort(key=lambda a: (PINNED.index(a[1]) if a[1] in PINNED else len(PINNED), a[1]))
+
 # Pagination constants
 APPS_PER_PAGE = 6
 current_page = 0
