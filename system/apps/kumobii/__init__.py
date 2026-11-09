@@ -2,8 +2,11 @@
 #
 #   A    : ふわっと跳ねる
 #   B    : 大きさを変える（小 → 中 → 大）
-#   C    : 空の時間を変える（昼 → 夕方 → 夜）
+#   C    : 空を変える（じどう → 昼 → 夕方 → 夜 → じどう）
 #   HOME : メニューに戻る
+#
+# 「じどう」のときは、日本時間で空が変わる（6〜16 時 昼、16〜18 時 夕方、18〜6 時 夜）。
+# 時刻は本体の時計チップから読み、未設定なら Wi-Fi で合わせる（jst.py）。
 #
 # くもびぃの絵は公式画像を使わず、円を重ねて描いたファンアートです。
 
@@ -15,7 +18,10 @@ import random
 sys.path.insert(0, "/system/apps/kumobii")
 os.chdir("/system/apps/kumobii")
 
-from badgeware import screen, Image, shapes, brushes, io, run, Matrix
+from badgeware import screen, Image, PixelFont, shapes, brushes, io, run, Matrix
+import jst
+
+screen.font = PixelFont.load("/system/assets/fonts/ark.ppf")
 
 W, H = 160, 120
 
@@ -36,6 +42,7 @@ SKIES = [
 # 日本語の文字は画像で貼る（tools/make_kana_labels.py で作る）
 TITLES = [Image.load(f"assets/title_{i}.png") for i in range(3)]
 SKY_LABELS = [Image.load(f"assets/sky_{i}.png") for i in range(3)]
+AUTO_LABELS = [Image.load(f"assets/auto_{i}.png") for i in range(3)]
 SIZES = [0.6, 1.0, 1.35]
 
 # 本体の形: K の字に見える雲（中心からの位置と半径。大きさ 1.0 のとき）
@@ -58,6 +65,7 @@ EYE_Y = -2.5
 SHADE_LIFT = 3
 
 sky = 0
+sky_mode = None   # None = じどう（日本時間で決める）、0〜2 = 手動
 size_i = 1
 scale = SIZES[size_i]
 
@@ -80,6 +88,15 @@ def init():
     far_clouds = [[random.uniform(0, W), random.uniform(8, H - 30), random.uniform(0.08, 0.25),
                    random.uniform(0.6, 1.2)] for _ in range(5)]
     blink_at = io.ticks + 2000
+    jst.restore()
+
+
+def sky_for_hour(hour):
+    if 6 <= hour < 16:
+        return 0
+    if 16 <= hour < 18:
+        return 1
+    return 2
 
 
 def lerp(a, b, t):
@@ -108,9 +125,9 @@ def draw_sky():
             screen.draw(shapes.rectangle(sx, sy, 1, 1))
         # 三日月: 月の円を描いてから、少しずらした空の色の円で欠けさせる
         screen.brush = brushes.color(255, 250, 210)
-        screen.draw(shapes.circle(128, 22, 8))
-        screen.brush = brushes.color(*sky_at(19))
-        screen.draw(shapes.circle(132, 19, 7))
+        screen.draw(shapes.circle(118, 34, 8))
+        screen.brush = brushes.color(*sky_at(31))
+        screen.draw(shapes.circle(122, 31, 7))
 
 
 def draw_far_clouds():
@@ -183,14 +200,21 @@ def _ellipse(px, py, rx, ry, angle):
 
 
 def update():
-    global sky, size_i, scale, x, y, vx, jump_v, jump_y, tilt, blink_at, look
+    global sky, sky_mode, size_i, scale, x, y, vx, jump_v, jump_y, tilt, blink_at, look
 
     if io.BUTTON_A in io.pressed and jump_y > -1:
         jump_v = -2.6
     if io.BUTTON_B in io.pressed:
         size_i = (size_i + 1) % len(SIZES)
     if io.BUTTON_C in io.pressed:
-        sky = (sky + 1) % len(SKIES)
+        sky_mode = 0 if sky_mode is None else (None if sky_mode == len(SKIES) - 1 else sky_mode + 1)
+
+    jst.tick()
+    now = jst.now()
+    if sky_mode is not None:
+        sky = sky_mode
+    elif now:
+        sky = sky_for_hour(now[3])
 
     # 大きさはゆっくり変わる（わたあめっぽく）
     scale += (SIZES[size_i] - scale) * 0.12
@@ -233,6 +257,15 @@ def update():
 
     screen.blit(TITLES[sky], 3, 2)
     screen.blit(SKY_LABELS[sky], W - 3 - SKY_LABELS[sky].width, 2)
+    if sky_mode is None:
+        screen.blit(AUTO_LABELS[sky], W - 3 - AUTO_LABELS[sky].width, 15)
+
+    # 日本時間の時計（上の真ん中）。未設定なら --:-- と状態
+    screen.brush = brushes.color(*SKIES[sky][3])
+    clock = f"{now[3]:02d}:{now[4]:02d}" if now else "--:--"
+    screen.text(clock, (W - screen.measure_text(clock)[0]) // 2, 2)
+    if jst.status:
+        screen.text(jst.status, (W - screen.measure_text(jst.status)[0]) // 2, 12)
 
 
 if __name__ == "__main__":

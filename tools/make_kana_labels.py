@@ -4,7 +4,7 @@
 文字を描いて画像にし、アプリでは blit で貼る。
 
 usage: python tools/make_kana_labels.py
-出力: system/apps/kumobii/assets/title_<空>.png, sky_<空>.png（空 = 0 昼, 1 夕方, 2 夜）
+出力: system/apps/kumobii/assets/title_<空>.png, sky_<空>.png, auto_<空>.png（空 = 0 昼, 1 夕方, 2 夜）
 """
 
 import os
@@ -38,6 +38,7 @@ def main():
     for i, color in enumerate(COLORS):
         label("くもびぃ", color, os.path.join(OUT, f"title_{i}.png"))
         label(SKY_NAMES[i], color, os.path.join(OUT, f"sky_{i}.png"))
+        label("じどう", color, os.path.join(OUT, f"auto_{i}.png"))
 
 
 if __name__ == "__main__":

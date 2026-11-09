@@ -27,7 +27,7 @@ GitHub Universe 2025 でもらったバッジ（Pimoroni Tufty 2350 ベース、
 | flappy | Mona が障害物をくぐるゲーム | `A` で羽ばたく |
 | gallery | 内蔵画像のビューアー | `A` / `C` で前後、`B` で説明の表示切り替え |
 | monapet | Mona の育成 | `A` 遊ぶ、`B` ごはん、`C` お風呂 |
-| kumobii | KINTO のキャラクター「くもびぃ」が空をぷかぷか浮かぶのを眺める自作アプリ | `A` 跳ねる、`B` 大きさ（小・中・大）、`C` 空（昼・夕方・夜） |
+| kumobii | KINTO のキャラクター「くもびぃ」が空をぷかぷか浮かぶのを眺める自作アプリ | `A` 跳ねる、`B` 大きさ（小・中・大）、`C` 空（じどう・昼・夕方・夜）。「じどう」は日本時間で空が変わる。時刻は本体の時計チップから読み、未設定なら `secrets.py` の Wi-Fi で合わせる |
 
 使えるセンサーや LED の位置は [docs/hardware.md](docs/hardware.md) にまとめています（照度センサー・時計チップ・LED 4 か所あり、加速度センサーなし）。Qw/ST 端子に足せるセンサーは [docs/sensors.md](docs/sensors.md) にまとめています。
 
