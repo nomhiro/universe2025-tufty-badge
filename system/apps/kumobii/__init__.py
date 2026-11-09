@@ -15,9 +15,7 @@ import random
 sys.path.insert(0, "/system/apps/kumobii")
 os.chdir("/system/apps/kumobii")
 
-from badgeware import screen, PixelFont, shapes, brushes, io, run, Matrix
-
-screen.font = PixelFont.load("/system/assets/fonts/ark.ppf")
+from badgeware import screen, Image, shapes, brushes, io, run, Matrix
 
 W, H = 160, 120
 
@@ -26,6 +24,7 @@ OUTLINE = brushes.color(18, 98, 128)
 BODY = brushes.color(255, 255, 255)
 SHADE = brushes.color(214, 234, 240)
 PUPIL = brushes.color(18, 98, 128)
+EYE_RIM = brushes.color(170, 196, 206)
 
 # 空の時間ごとの色: (空の上, 空の下, 遠くの雲, 文字)
 # 半透明は使わず、混ぜた色を直接指定する（シミュレーターでも同じ見た目になる）
@@ -34,19 +33,27 @@ SKIES = [
     ((70, 70, 140), (250, 168, 120), (246, 196, 178), (255, 240, 230)),
     ((10, 16, 44), (34, 52, 104), (60, 78, 132), (210, 220, 255)),
 ]
-SKY_NAMES = ["DAY", "SUNSET", "NIGHT"]
+# 日本語の文字は画像で貼る（tools/make_kana_labels.py で作る）
+TITLES = [Image.load(f"assets/title_{i}.png") for i in range(3)]
+SKY_LABELS = [Image.load(f"assets/sky_{i}.png") for i in range(3)]
 SIZES = [0.6, 1.0, 1.35]
 
 # 本体の形: K の字に見える雲（中心からの位置と半径。大きさ 1.0 のとき）
-#   左の大きなかたまり + 右上 + 右下。右側の中ほどがくびれて K に見える
+#   左上・左下・右上・右下の 4 つのかたまりと、すき間を埋める円。
+#   左側はなだらかにふくらみ、右側の中ほどだけが浅くくびれて K に見える。
+#   公式の立体イラストの輪郭に円を重ねて合わせた値
 BLOBS = [
-    (-9, 1, 17),    # 左の胴
-    (-3, -9, 13),   # 上
-    (9, -11, 11),   # 右上
-    (10, 11, 11),   # 右下
-    (-5, 10, 13),   # 下
-    (0, 1, 11),     # 真ん中を埋める
+    (-8.7, -11.0, 13.0),  # 左上
+    (12.0, -13.2, 9.6),   # 右上
+    (12.0, 9.8, 11.1),    # 右下
+    (-7.9, 10.4, 13.3),   # 左下
+    (-10.1, 0.1, 13.0),   # 左の中ほど
+    (2.0, -0.5, 13.4),    # 真ん中
+    (1.3, -11.0, 9.3),    # 上のくぼみを浅くする
+    (1.3, 10.5, 8.1),     # 下のくぼみを浅くする
 ]
+EYES_X = (-10.0, -0.5)
+EYE_Y = -2.5
 # 下側の影は、白い面を少し上にずらして下に水色が三日月形に残るようにする
 SHADE_LIFT = 3
 
@@ -140,27 +147,34 @@ def draw_kumobii(cx, cy, k, angle, blinking, look_dx):
     screen.brush = BODY
     for bx, by, r in BLOBS:
         # 上半分だけ持ち上げた白で塗り、下に影を残す
-        lift = SHADE_LIFT if by > 0 else 0
+        lift = SHADE_LIFT if by > 1 else 0
         dx, dy = rotate(bx * k, (by - lift) * k, c, s)
-        screen.draw(shapes.circle(cx + dx, cy + dy, (r - (1 if by > 0 else 0)) * k))
+        screen.draw(shapes.circle(cx + dx, cy + dy, (r - (1 if by > 1 else 0)) * k))
 
     # 目（白目の縁取り + 黒目）。左寄りの位置に 2 つ
-    for ex in (-7, 2):
-        dx, dy = rotate(ex * k, -3 * k, c, s)
+    for ex in EYES_X:
+        dx, dy = rotate(ex * k, EYE_Y * k, c, s)
         px, py = cx + dx, cy + dy
         if blinking:
             screen.brush = PUPIL
             screen.draw(shapes.rounded_rectangle(px - 2.5 * k, py - 0.6 * k, 5 * k, 1.6 * k, 0.8 * k))
             continue
         eye = shapes.circle(0, 0, 1)
-        screen.brush = OUTLINE
-        eye.transform = _ellipse(px, py, 3.2 * k, 4.2 * k, angle)
+        if k < 0.8:
+            # 小さいときは白目を描くとつぶれるので、黒目だけにする
+            screen.brush = PUPIL
+            eye.transform = _ellipse(px, py, max(1.0, 1.8 * k), max(1.4, 2.6 * k), angle)
+            screen.draw(eye)
+            continue
+        # 白目の縁は淡い色（公式イラストの、くぼんだ白目の影に合わせる）
+        screen.brush = EYE_RIM
+        eye.transform = _ellipse(px, py, 2.9 * k, 3.6 * k, angle)
         screen.draw(eye)
         screen.brush = BODY
-        eye.transform = _ellipse(px, py, 2.4 * k, 3.4 * k, angle)
+        eye.transform = _ellipse(px - 0.3 * k, py - 0.3 * k, 2.3 * k, 3.0 * k, angle)
         screen.draw(eye)
         screen.brush = PUPIL
-        eye.transform = _ellipse(px + look_dx * k, py + 0.4 * k, 1.9 * k, 2.8 * k, angle)
+        eye.transform = _ellipse(px + (0.4 + look_dx * 0.5) * k, py + 0.5 * k, 1.8 * k, 2.5 * k, angle)
         screen.draw(eye)
 
 
@@ -217,10 +231,8 @@ def update():
 
     draw_kumobii(x, y, scale, tilt, blinking, look)
 
-    screen.brush = brushes.color(*SKIES[sky][3])
-    screen.text("KUMOBII", 3, 2)
-    label = SKY_NAMES[sky]
-    screen.text(label, W - 3 - screen.measure_text(label)[0], 2)
+    screen.blit(TITLES[sky], 3, 2)
+    screen.blit(SKY_LABELS[sky], W - 3 - SKY_LABELS[sky].width, 2)
 
 
 if __name__ == "__main__":
