@@ -1,0 +1,20 @@
+# 環境・取得物（tools/bootstrap.py で再作成できる）
+.venv/
+vendor/
+__pycache__/
+.badge_state/
+
+# バッジ本体のバックアップ（secrets.py に Wi-Fi のパスワードが入っている）
+backup/
+secrets.py
+
+# 標準アプリと素材は公式リポジトリのコピーなので管理しない。自作アプリだけ追跡する
+system/assets/
+system/apps/*
+!system/apps/hello_badge/
+
+# シミュレーターの画面写真など
+out/
+
+# 個人の写真
+*.jpg
