@@ -4,14 +4,14 @@ vendor/
 __pycache__/
 .badge_state/
 
-# バッジ本体のバックアップ（secrets.py に Wi-Fi のパスワードが入っている）
-backup/
+# Wi-Fi のパスワードなどが入るので公開しない（ひな形は secrets.example.py）
 secrets.py
 
-# 標準アプリと素材は公式リポジトリのコピーなので管理しない。自作アプリだけ追跡する
-system/assets/
-system/apps/*
-!system/apps/hello_badge/
+# バッジ本体の初回バックアップ（secrets.py を含む）
+backup/
+
+# Windows がドライブに作るフォルダ
+System Volume Information/
 
 # シミュレーターの画面写真など
 out/
